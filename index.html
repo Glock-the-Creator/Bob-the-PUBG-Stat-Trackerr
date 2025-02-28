@@ -48,7 +48,6 @@
             <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
         </div>
 
-        <!-- Tabs -->
         <ul class="nav nav-tabs mt-3" id="statsTabs">
             <li class="nav-item">
                 <a class="nav-link active" id="stats-tab" data-bs-toggle="tab" href="#stats">Player Stats</a>
@@ -59,12 +58,9 @@
         </ul>
 
         <div class="tab-content mt-3">
-            <!-- Player Stats Tab -->
             <div class="tab-pane fade show active" id="stats">
                 <ul class="list-group mt-3" id="statsList"></ul>
             </div>
-
-            <!-- Match History Tab -->
             <div class="tab-pane fade" id="history">
                 <ul class="list-group mt-3" id="matchHistoryList"></ul>
             </div>
@@ -72,10 +68,11 @@
     </div>
 
     <script>
+        let apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI2OGUxZTc2MC1kNzhhLTAxM2QtMWNiNC0wNjFhOWQ1YjYxYWYiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNzQwNjk2MzA0LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6ImJvYi1haSJ9.g538psKEPmEEfdhBJe5jP2Jsym4xEVeWx3A-M4rXF0I"; // Replace with your actual API key
+
         async function fetchStats() {
             let username = document.getElementById("username").value;
             let platform = document.getElementById("platform").value;
-            let apiKey = "YOUR_PUBG_API_KEY";
 
             if (!username) {
                 alert("Please enter a valid PUBG username.");
@@ -95,7 +92,6 @@
 
                 let playerId = playerData.data[0].id;
 
-                // Fetch season stats
                 let seasonResponse = await fetch(`https://api.pubg.com/shards/${platform}/seasons`, {
                     headers: { "Authorization": `Bearer ${apiKey}`, "Accept": "application/vnd.api+json" }
                 });
@@ -130,41 +126,6 @@
                 alert("Error fetching data: " + error.message);
             } finally {
                 document.getElementById("loadingBar").classList.add("d-none");
-            }
-        }
-
-        async function fetchMatchHistory(playerId, platform, apiKey) {
-            try {
-                let matchResponse = await fetch(`https://api.pubg.com/shards/${platform}/players/${playerId}/matches`, {
-                    headers: { "Authorization": `Bearer ${apiKey}`, "Accept": "application/vnd.api+json" }
-                });
-                let matchData = await matchResponse.json();
-                if (!matchData.data || matchData.data.length === 0) {
-                    document.getElementById("matchHistoryList").innerHTML = "<li class='list-group-item'>No recent matches found.</li>";
-                    return;
-                }
-
-                let matchList = "";
-                for (let i = 0; i < Math.min(5, matchData.data.length); i++) {
-                    let matchId = matchData.data[i].id;
-                    let matchDetails = await fetch(`https://api.pubg.com/shards/${platform}/matches/${matchId}`, {
-                        headers: { "Authorization": `Bearer ${apiKey}`, "Accept": "application/vnd.api+json" }
-                    });
-                    let matchDetailsData = await matchDetails.json();
-                    let matchMode = matchDetailsData.data.attributes.gameMode;
-                    let duration = (matchDetailsData.data.attributes.duration / 60).toFixed(2);
-                    let rank = matchDetailsData.data.attributes.stats.rank;
-
-                    matchList += `
-                        <li class="list-group-item">
-                            Mode: ${matchMode.toUpperCase()} | Placement: ${rank} | Duration: ${duration} min
-                        </li>
-                    `;
-                }
-
-                document.getElementById("matchHistoryList").innerHTML = matchList;
-            } catch (error) {
-                document.getElementById("matchHistoryList").innerHTML = "<li class='list-group-item'>Error fetching match history.</li>";
             }
         }
     </script>
