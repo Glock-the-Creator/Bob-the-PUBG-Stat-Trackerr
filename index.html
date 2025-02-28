@@ -89,7 +89,6 @@
                 
                 let deaths = stats.deaths || (stats.roundsPlayed - stats.wins);
                 let kdaRatio = deaths > 0 ? ((stats.kills + stats.assists) / deaths).toFixed(2) : stats.kills + stats.assists;
-                let timePlayed = (stats.timePlayed / 3600).toFixed(2);
                 let rank = stats.currentTier.tier + " " + stats.currentTier.subTier;
                 
                 let statsList = `
@@ -99,7 +98,6 @@
                     <li class="list-group-item">Assists: ${stats.assists}</li>
                     <li class="list-group-item">Damage Dealt: ${stats.damageDealt.toFixed(2)}</li>
                     <li class="list-group-item">Rounds Played: ${stats.roundsPlayed}</li>
-                    <li class="list-group-item">Time Played: ${timePlayed} hours</li>
                     <li class="list-group-item">Deaths: ${deaths}</li>
                     <li class="list-group-item">KDA Ratio: ${kdaRatio}</li>
                 `;
